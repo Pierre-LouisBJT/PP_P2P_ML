@@ -2,4 +2,7 @@
 
 |      Worker      |     Task               | Remarks                                                                                                                                    |
 | :------------: | :-----------------------: | ----------------------------------------------------------------------------------------------------------------------------------------- |
-|  Leonid   |     Test                | Test 2
+|  Leonid   |     Lire article                | Test 2
+|  PLB   |     Lire article                | Test 2
+|     |     Pseudo code              | Créer les fichiers .py et les classes/fonctions (nom, entrèe, sortie)
+|  -   |     choisir librairie de ML              | Test 2
