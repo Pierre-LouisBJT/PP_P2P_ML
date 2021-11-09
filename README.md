@@ -10,3 +10,6 @@
 | Leonid | faire fonction update() non private | flag for privacy
 | PLB | Theta initialization | law?
 | PLB | broadcasting | with matrix
+| ? | W init | -
+| ? | loss functions (l, L) and their grads | -
+| ? | loader dataset | -
