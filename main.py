@@ -8,7 +8,7 @@ import numpy as np
 
 from modules import * #TODO syntax
 
-def train(data, matrix, agents_data_idx, privacy, max_steps, d, mu, alpha, L): #d is the dim of x
+def train(data, matrix, agents_data_idx, privacy, max_steps, mu, alpha, L): #d is the dim of x
     """
     random initialization
     for each step in range nb_steps :
@@ -19,7 +19,7 @@ def train(data, matrix, agents_data_idx, privacy, max_steps, d, mu, alpha, L): #
                 calculate time before next wake up (random.poisson(lam=1.0, size=None))
     """
     n = len(matrix) #matrix is a list of lists
-    d = data[0]
+    d = len(data[0])
     model = []
     clocks = [] #n times (int) wher the agent will wake up
     neighbors = [] #list of the indexs (int) of the neighbors for each agent
