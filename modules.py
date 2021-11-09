@@ -13,8 +13,20 @@ def updateStep(model, matrix, C, mu, alpha, L):
     return model
 
 #broadcast step
-def broadcast(model, newTheta, matrix):
-    return False
+def broadcastStep(model, neighbors, agent):
+    if len(neighbors)>0:
+        for neighbor in neighbors:
+            model[neighbor] = model[agent]
+    return model
+
+def getNeighbors(matrix, agent): #matrix, int
+    n = len(matrix)
+    neighbors = []
+    for i in range(0, n):
+        if i != agent:
+            if matrix[agent][i] > 0:
+                neighbors.append(i)
+    return neighbors
 
 class agent : #idx, matrix, model?
 
