@@ -9,6 +9,9 @@ def construct_matrix(data): # construct the adjency matrix of the graph, using m
 def computeGrad():
     return False
 
+def updateStep(model, matrix, C, mu, alpha, L):
+    return model
+
 #broadcast step
 def broadcast(model, newTheta, matrix):
     return False

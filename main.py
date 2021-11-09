@@ -16,6 +16,7 @@ def train(data, agents_matrix, agents_data_idx, privacy, nb_steps):
                 broadcast step
                 calculate time before next wake up (random.poisson(lam=1.0, size=None))
     """
+    
     return False
 
 def evaluate(data, model): #makes predictions using a model
