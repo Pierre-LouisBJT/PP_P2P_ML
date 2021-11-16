@@ -5,8 +5,13 @@ Theta (global param) is a list of dictionnaries.
 """
 import random
 import numpy as np
+from absl import flags
 
 from modules import * #TODO syntax
+
+#FLAGS = flags.FLAGS
+
+#flags.DEFINE_string('job', 'null', 'train or evaluate')
 
 def train(data, matrix, agents_data_idx, privacy, max_steps, mu, alpha, L): #d is the dim of x
     """
@@ -65,5 +70,12 @@ def train(data, matrix, agents_data_idx, privacy, max_steps, mu, alpha, L): #d i
 def evaluate(data, model): #makes predictions using a model
     return False
 
-
-print('Hello world')
+### RUN ###
+"""
+if FLAGS.job == 'train':
+    print('Will train')
+elif FLAGS.job == 'evaluate':
+    print('eval')
+else:
+    print('add flag job (train or evaluate)')
+"""
