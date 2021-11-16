@@ -79,3 +79,5 @@ elif FLAGS.job == 'evaluate':
 else:
     print('add flag job (train or evaluate)')
 """
+path = '/Users/plbiojout/Documents/code/EA_PP_P2P_ML/data/ml-100k/'
+load_ml100k(path)
