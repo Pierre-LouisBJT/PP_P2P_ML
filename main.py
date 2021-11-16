@@ -13,7 +13,7 @@ from modules import * #TODO syntax
 
 #flags.DEFINE_string('job', 'null', 'train or evaluate')
 
-def train(data, matrix, agents_data_idx, privacy, max_steps, mu, alpha, L): #d is the dim of x
+def train(data, W, agents_data_idx, privacy, max_steps, mu, locL): #d is the dim of x
     """
     random initialization
     for each step in range nb_steps :
@@ -23,12 +23,16 @@ def train(data, matrix, agents_data_idx, privacy, max_steps, mu, alpha, L): #d i
                 broadcast step
                 calculate time before next wake up (random.poisson(lam=1.0, size=None))
     """
-    n = len(matrix) #matrix is a list of lists
+    n = len(W) #W is a list of lists
     d = len(data[0])
     model = []
     clocks = [] #n times (int) wher the agent will wake up
     neighbors = [] #list of the indexs (int) of the neighbors for each agent
     C = [] #list of n float, confidence coeff for each agent
+    alpha = [] #list of n float, alpha for each agent
+    D = [] #list of n float, D for each agent
+    lambd = [] #list of n float, lambd for each agent
+
     #random init of the model
     for i in range(0, n):
         submodel = []
@@ -45,7 +49,7 @@ def train(data, matrix, agents_data_idx, privacy, max_steps, mu, alpha, L): #d i
 
     #calculate neighbors
     for agent in range(0, n):
-        neighbors.append(getNeighbors(matrix, agent))
+        neighbors.append(getNeighbors(W, agent))
 
     #calculate confidence coeff
     for agent in range(0, n):
@@ -54,12 +58,24 @@ def train(data, matrix, agents_data_idx, privacy, max_steps, mu, alpha, L): #d i
     for agent in range(0, n):
         C[agent] = C[agent]/m_max
 
+    #calculate alphas
+    for agent in range(0, n):
+        alpha.append(1 / (1 + mu * C[agent] * locL[agent]))
+    
+    #calculate D
+    for agent in range(0, n):
+        D.append(sum(W[agent]))
+
+    #calculate lmbda
+    for agent in range(0, n):
+        lambd.append(1 / len(agents_data_idx[agent]))
+
     #run of the algo for each step
     for step in range(0, max_steps):
         for agent in range (0, n):
             if step == clocks[agent] : #agent wakes up
                 #update local theta_i
-                model = updateStep(model, matrix, C, mu, alpha, L) #TODO missing args?
+                model = updateStep(model, W, agent, agents_data_idx, C, mu, alpha, lambd) #TODO args?
                 #broadcast step
                 model = broadcastStep(model, neighbors, agent)
                 #calculate time before next wake up
