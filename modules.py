@@ -71,13 +71,11 @@ def load_ml100k(path): #path (str) to folder, ends with '/'
         for x in rawitem_refined:
             item.append(int(x))
         items.append(item)
-    print(len(items))
-    print(len(rawdata))
-    print(rawdata)
 
     data = []
     for x in rawdata:
         item_id = x[1]
         rating = x[2]
         data.append([items[item_id - 1], rating]) #item_idx = item_id - 1
+    print('Dataset is loaded!')
     return data, agents_data_idx
