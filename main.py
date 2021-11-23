@@ -38,7 +38,7 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim
 
     """
     n = len(W) #W is a list of lists
-    d = len(data[0])
+    d = len(data[0][0])
     model = []
     clocks = [] #n times (int) wher the agent will wake up
     neighbors = [] #list of the indexs (int) of the neighbors for each agent
@@ -64,7 +64,6 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim
     #calculate neighbors
     for agent in range(0, n):
         neighbors.append(getNeighbors(W, agent))
-
     #calculate confidence coeff
     for agent in range(0, n):
         C.append(len(agents_data_idx[agent]))
@@ -88,8 +87,10 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim
     for step in range(0, max_steps):
         for agent in range (0, n):
             if step == clocks[agent] : #agent wakes up
+                if agent==0:
+                    print(model[agent][agent])
                 #update local theta_i
-                model = updateStep(model, W, agent, agents_data_idx, C, mu, alpha, lambd) #TODO args?
+                model = updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd) #TODO args?
                 #broadcast step
                 model = broadcastStep(model, neighbors, agent)
                 #calculate time before next wake up
@@ -112,10 +113,6 @@ else:
 path = '/Users/plbiojout/Documents/code/EA_PP_P2P_ML/data/ml-100k/'
 data, agents_data_idx = load_ml100k(path)
 
-print(data)
-print('---')
-print( agents_data_idx)
-
 n = len(agents_data_idx)
 
 mu=0.5
@@ -123,8 +120,8 @@ mu=0.5
 locL = []
 for i in range(0, n):
     locL.append(1)
-    
-max_steps = 500
+
+max_steps = 50000
 
 W = []
 for i in range(0, n):

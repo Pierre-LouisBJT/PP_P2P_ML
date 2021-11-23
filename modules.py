@@ -21,7 +21,8 @@ def loss(theta, x, y): # float, (theta.T * x - y)**2, quadratic loss by default,
     return (np.dot(theta, x) - y)**2
 
 def lossGrad(theta, x, y): # list of n float, 2(theta.T * x - y)x, grad of quadratic loss by default, where theta is current local for agent
-    return 2 * (np.dot(theta, x) - y) * x
+    #debug
+    return 2 * (np.dot(theta, x) - y) * np.array(x)
 
 def localLossFun(model, agents_data_idx, lambd, agent): #float
     theta = model[agent][-1] #current local theta
@@ -36,8 +37,8 @@ def localLossFun(model, agents_data_idx, lambd, agent): #float
     localLoss += lambd[agent] * np.linalg.norm(theta, ord=2)**2
     return localLoss
 
-def localLossFunGrad(model, agents_data_idx, lambd, agent): #list of n float
-    theta = model[agent][-1] #current local theta
+def localLossFunGrad(data, model, agents_data_idx, lambd, agent): #list of n float
+    theta = model[agent][agent] #current local theta
 
     localLossGrad = 0
 
@@ -46,10 +47,10 @@ def localLossFunGrad(model, agents_data_idx, lambd, agent): #list of n float
 
     localLossGrad /= len(agents_data_idx[agent])
 
-    localLossGrad += 2 * lambd[agent] * theta
+    localLossGrad += 2 * lambd[agent] * np.array(theta)
     return localLossGrad
 
-def updateStep(model, W, agent, agents_data_idx, C, mu, alpha, lambd):
+def updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd):
     theta = model[agent][-1]
     learningPart = 0
     
@@ -57,16 +58,16 @@ def updateStep(model, W, agent, agents_data_idx, C, mu, alpha, lambd):
         learningPart += W[agent][neighbor] * np.array(model[neighbor][-1]) / W[agent][agent]
 
 
-    learningPart -= mu * C[agent] * localLossFunGrad(model, agents_data_idx, lambd, agent)
+    learningPart -= mu * C[agent] * localLossFunGrad(data, model, agents_data_idx, lambd, agent)
 
-    theta_new = (1 - alpha[agent]) * theta + alpha[agent] * learningPart
+    theta_new = (1 - alpha[agent]) * np.array(theta) + alpha[agent] * learningPart
     model[agent].append(theta_new)
     return model
 
 #broadcast step
 def broadcastStep(model, neighbors, agent):
     if len(neighbors)>0:
-        for neighbor in neighbors:
+        for neighbor in neighbors[agent]:
             model[neighbor] = model[agent]
     return model
 
