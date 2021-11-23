@@ -13,3 +13,4 @@
 | ? | W init | -
 | ? | loss functions (l, L) and their grads | -
 | ? | loader dataset | -
+| ? | transform lists to np.array | -
