@@ -17,10 +17,13 @@ def objectiveFunGrad():
 def computeGrad():
     return False
 
-def loss(theta, x, y): #(theta.T * x - y)**2, quadratic loss by default, where theta is current local for agent
+def loss(theta, x, y): # float, (theta.T * x - y)**2, quadratic loss by default, where theta is current local for agent
     return (np.dot(theta, x) - y)**2
 
-def localLossFun(model, agents_data_idx, lambd, agent):
+def lossGrad(theta, x, y): # list of n float, 2(theta.T * x - y)x, grad of quadratic loss by default, where theta is current local for agent
+    return 2 * (np.dot(theta, x) - y) * x
+
+def localLossFun(model, agents_data_idx, lambd, agent): #float
     theta = model[agent][-1] #current local theta
 
     localLoss = 0
@@ -30,15 +33,34 @@ def localLossFun(model, agents_data_idx, lambd, agent):
 
     localLoss /= len(agents_data_idx[agent])
 
-    localLoss += lambd[agent] * theta**2
+    localLoss += lambd[agent] * np.linalg.norm(theta, ord=2)**2
     return localLoss
+
+def localLossFunGrad(model, agents_data_idx, lambd, agent): #list of n float
+    theta = model[agent][-1] #current local theta
+
+    localLossGrad = 0
+
+    for j in agents_data_idx[agent]:
+        localLossGrad += lossGrad(theta, data[j][0], data[j][1])
+
+    localLossGrad /= len(agents_data_idx[agent])
+
+    localLossGrad += 2 * lambd[agent] * theta
+    return localLossGrad
 
 def updateStep(model, W, agent, agents_data_idx, C, mu, alpha, lambd):
     theta = model[agent][-1]
     learningPart = 0
     
+    for neighbor in agents_data_idx[agent]:
+        learningPart += W[agent][neighbor] * model[neighbor][-1]/ W[agent][agent]
+
+
+    learningPart -= mu * C[agent] * localLossFunGrad(model, agents_data_idx, lambd, agent)
+
     theta_new = (1 - alpha[agent]) * theta + alpha[agent] * learningPart
-    model[agent].append(theta)
+    model[agent].append(theta_new)
     return model
 
 #broadcast step

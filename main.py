@@ -13,8 +13,21 @@ from modules import * #TODO syntax
 
 #flags.DEFINE_string('job', 'null', 'train or evaluate')
 
-def train(data, W, agents_data_idx, privacy, max_steps, mu, locL): #d is the dim of x
+def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim of x
     """
+    W : list of n lists with n float each, nonnegative weight matrix for n agents;
+
+    agents_data_idx : list of n float, list of neighbors for the agent;
+
+    privacy : boolean, is True for the private case, False else;
+
+    mu : float, trade-off parameter between having similar models for strongly connected agents
+    and models that are accurate on their respective local datasets;
+
+    locL : list of n float, Lipschitz constants L, L_i^{loc} for Lipschitz continuous gradien
+
+    max_steps : maximum number of training steps;
+
     random initialization
     for each step in range nb_steps :
         for each agent:
@@ -22,6 +35,7 @@ def train(data, W, agents_data_idx, privacy, max_steps, mu, locL): #d is the dim
                 update local theta_i (4)
                 broadcast step
                 calculate time before next wake up (random.poisson(lam=1.0, size=None))
+
     """
     n = len(W) #W is a list of lists
     d = len(data[0])
