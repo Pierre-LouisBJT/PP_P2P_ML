@@ -24,7 +24,7 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim
     mu : float, trade-off parameter between having similar models for strongly connected agents
     and models that are accurate on their respective local datasets;
 
-    locL : list of n float, Lipschitz constants L, L_i^{loc} for Lipschitz continuous gradien
+    locL : list of n float, Lipschitz constants L for localLossGrad, L_i^{loc} for Lipschitz continuous gradien localLossGrad for each agent;
 
     max_steps : maximum number of training steps;
 
