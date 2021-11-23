@@ -53,8 +53,8 @@ def updateStep(model, W, agent, agents_data_idx, C, mu, alpha, lambd):
     theta = model[agent][-1]
     learningPart = 0
     
-    for neighbor in agents_data_idx[agent]:
-        learningPart += W[agent][neighbor] * np.array(model[neighbor][-1])/ W[agent][agent]
+    for neighbor in np.nonzero(W[agent])[0].tolist():
+        learningPart += W[agent][neighbor] * np.array(model[neighbor][-1]) / W[agent][agent]
 
 
     learningPart -= mu * C[agent] * localLossFunGrad(model, agents_data_idx, lambd, agent)
