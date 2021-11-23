@@ -54,7 +54,7 @@ def updateStep(model, W, agent, agents_data_idx, C, mu, alpha, lambd):
     learningPart = 0
     
     for neighbor in agents_data_idx[agent]:
-        learningPart += W[agent][neighbor] * model[neighbor][-1]/ W[agent][agent]
+        learningPart += W[agent][neighbor] * np.array(model[neighbor][-1])/ W[agent][agent]
 
 
     learningPart -= mu * C[agent] * localLossFunGrad(model, agents_data_idx, lambd, agent)
@@ -106,7 +106,7 @@ def load_ml100k(path): #path (str) to folder, ends with '/'
     for i in range(0,n):
         agents_data_idx.append([])
     for idx in range(0,len(rawdata)):
-        agents_data_idx[rawdata[idx][0] - 1] = idx
+        agents_data_idx[rawdata[idx][0] - 1].append(idx)
 
     #create the final data object
     #extract infos from u.item

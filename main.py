@@ -111,3 +111,26 @@ else:
 """
 path = '/Users/plbiojout/Documents/code/EA_PP_P2P_ML/data/ml-100k/'
 data, agents_data_idx = load_ml100k(path)
+
+print(data)
+print('---')
+print( agents_data_idx)
+
+n = len(agents_data_idx)
+
+mu=0.5
+
+locL = []
+for i in range(0, n):
+    locL.append(1)
+    
+max_steps = 500
+
+W = []
+for i in range(0, n):
+    line = []
+    for j in range(0,n):
+        line.append(1)
+    W.append(line)
+
+train(data, W, agents_data_idx, 0, mu, locL, max_steps)
