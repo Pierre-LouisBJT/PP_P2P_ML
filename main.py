@@ -15,7 +15,7 @@ from config import PATH_TO_DATA#import the configuration variables
 
 #flags.DEFINE_string('job', 'null', 'train or evaluate')
 
-def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim of x
+def train(data, W, agents_data_idx, privacy, mu, locL, max_steps, eps): #d is the dim of x
     """
     W : list of n lists with n float each, nonnegative weight matrix for n agents;
 
@@ -38,6 +38,7 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim
                 broadcast step
                 calculate time before next wake up (random.poisson(lam=1.0, size=None))
 
+    eps : list of ints (privacy level)
     """
     n = len(W) #W is a list of lists
     d = len(data[0][0])
@@ -88,15 +89,24 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim
     #log the loss
     losses = []
 
-    print('computing... (it can take some time)')
-    #run of the algo for each step
-    for step in range(0, max_steps):
-        for agent in range (0, n):
-            if step >= clocks[agent] : #agent wakes up
-                model = updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd) #TODO args?
-                model = broadcastStep(model, neighbors, agent)
-                clocks[agent] = step + np.random.poisson(lam=1.0, size=None)
-        #print('step {}'.format(step))
+    if privacy:
+        print('computing with privacy...')
+        for step in range(0, max_steps):
+            for agent in range (0, n):
+                if step >= clocks[agent] : #agent wakes up
+                    model = updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd) #TODO args?
+                    model = broadcastStep(model, neighbors, agent)
+                    clocks[agent] = step + np.random.poisson(lam=1.0, size=None)
+    else:
+        print('computing without privacy...')
+        #run of the algo for each step
+        for step in range(0, max_steps):
+            for agent in range (0, n):
+                if step >= clocks[agent] : #agent wakes up
+                    model = updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd) #TODO args?
+                    model = broadcastStep(model, neighbors, agent)
+                    clocks[agent] = step + np.random.poisson(lam=1.0, size=None)
+
     return model
 
 def evaluate(data, model, agents_data_idx): #makes predictions using a model on the data provided
@@ -138,11 +148,14 @@ for i in range(0, n):
         line.append(1)
     W.append(line)
 
+#generate privacy epsilons
+eps = [1.0]*n
+
 #nbrs = NearestNeighbors(n_neighbors=10, algorithm='auto', metric=smp.cosine_similarity).fit(test)
 
 W = np.identity(n)
 
-model = train(train_data, W, train_agents_data_idx, 0, mu, locL, max_steps)
+model = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
 print('trained model for {} steps'.format(max_steps))
 
 user_RMSEs = evaluate(test_data, model, test_agents_data_idx)

@@ -63,7 +63,27 @@ def updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd):
     learningPart -= mu * C[agent] * localLossFunGrad(data, model, agents_data_idx, lambd, agent)
     theta_new = (1 - alpha[agent]) * np.array(theta) + alpha[agent] * learningPart
     model[agent][agent] = theta_new
-    
+
+    return model
+
+#update step with privacy 
+
+def updateStep_private(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd, locL, eps): #eps list of epsilons
+    theta = model[agent][-1]
+    learningPart = 0.0
+    #print(np.nonzero(W[agent])[0].tolist())
+    for neighbor in np.nonzero(W[agent])[0].tolist():
+        #print(W[agent][neighbor] * np.array(model[neighbor][-1]) / W[agent][agent])
+        learningPart += W[agent][neighbor] * np.array(model[neighbor][-1]) / W[agent][agent]
+
+    #privacy noise
+    s = 2*locL[agent] / (eps[agent] * len(agents_data_idx[agent]))
+    etha = random.laplace(loc=0.0, scale=s, size=len(theta))
+
+    learningPart -= mu * C[agent] * localLossFunGrad(data, model, agents_data_idx, lambd, agent) + etha
+    theta_new = (1 - alpha[agent]) * np.array(theta) + alpha[agent] * learningPart
+    model[agent][agent] = theta_new
+
     return model
 
 #broadcast step
