@@ -61,9 +61,9 @@ def updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd):
 
 
     learningPart -= mu * C[agent] * localLossFunGrad(data, model, agents_data_idx, lambd, agent)
-
     theta_new = (1 - alpha[agent]) * np.array(theta) + alpha[agent] * learningPart
-    model[agent].append(theta_new)
+    model[agent][agent] = theta_new
+    
     return model
 
 #broadcast step
