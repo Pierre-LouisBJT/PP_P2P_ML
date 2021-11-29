@@ -93,14 +93,6 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim
     for step in range(0, max_steps):
         for agent in range (0, n):
             if step >= clocks[agent] : #agent wakes up
-<<<<<<< HEAD
-=======
-                #if agent==0:
-                    #print(model[agent][agent])
-
-                saved_model = model
-                #update local theta_i
->>>>>>> 13583365186facdac0744c9e5b7495334c8bc0af
                 model = updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd) #TODO args?
                 model = broadcastStep(model, neighbors, agent)
                 clocks[agent] = step + np.random.poisson(lam=1.0, size=None)
