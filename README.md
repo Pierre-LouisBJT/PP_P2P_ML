@@ -14,3 +14,7 @@
 | ? | loss functions (l, L) and their grads | -
 | ? | loader dataset | -
 | ? | transform lists to np.array | -
+| ? | Slides | See if "W is an identity matrix" == "mu is large" == "Purely local learning"
+| ? | Add privacy in model | -
+| ? | Bench mark | -
+| ? | Init graph | -
