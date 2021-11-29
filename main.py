@@ -87,25 +87,15 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim
     #log the loss
     losses = []
 
+    print('computing... (it can take some time)')
     #run of the algo for each step
     for step in range(0, max_steps):
         for agent in range (0, n):
             if step >= clocks[agent] : #agent wakes up
-                if agent==0:
-                    print(model[agent][agent])
-                saved_model = model
-                #update local theta_i
                 model = updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd) #TODO args?
-                #if saved_model != model:
-                    #print('diff models before update')
-                #broadcast step
                 model = broadcastStep(model, neighbors, agent)
-                #test
-                #if saved_model != model:
-                    #print('diff models after')
-                #calculate time before next wake up
                 clocks[agent] = step + np.random.poisson(lam=1.0, size=None)
-
+        #print('step {}'.format(step))
     return model
 
 def evaluate(data, model, agents_data_idx): #makes predictions using a model on the data provided
@@ -138,7 +128,7 @@ locL = []
 for i in range(0, n):
     locL.append(1)
 
-max_steps = 500
+max_steps = 30
 
 W = []
 for i in range(0, n):
