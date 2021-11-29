@@ -8,6 +8,7 @@ import numpy as np
 from absl import flags
 
 from modules import * #TODO syntax
+from config import PATH_TO_DATA#import the configuration variables
 
 #FLAGS = flags.FLAGS
 
@@ -98,7 +99,14 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim
 
     return model
 
-def evaluate(data, model): #makes predictions using a model
+def evaluate(data, model, agents_data_idx): #makes predictions using a model on the data provided
+    n = len(agents_data_idx)
+    user_RMSEs = []
+    for user in range(0,n):
+        user_RMSE = []
+        for data_idx in agents_data_idx[user]:
+            user_RMSE.append(loss(model[user][user], data[data_idx][0], data[data_idx][1]))
+    user_RMSEs.append(sum(user_RMSE)/len(user_RMSE))
     return False
 
 ### RUN ###
@@ -110,7 +118,7 @@ elif FLAGS.job == 'evaluate':
 else:
     print('add flag job (train or evaluate)')
 """
-path = '/Users/plbiojout/Documents/code/EA_PP_P2P_ML/data/ml-100k/'
+path = PATH_TO_DATA
 data, agents_data_idx = load_ml100k(path)
 
 n = len(agents_data_idx)
