@@ -54,7 +54,7 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim
         for j in range(0, n):
             theta = []
             for k in range (0,d):
-                theta.append(2*random.random() - 1) #TODO change init
+                theta.append((2*random.random() - 1)/1000) #TODO change init
             submodel.append(theta)
         model.append(submodel)
     
@@ -137,5 +137,7 @@ for i in range(0, n):
     for j in range(0,n):
         line.append(1)
     W.append(line)
+
+W = np.identity(n)
 
 train(data, W, agents_data_idx, 0, mu, locL, max_steps)
