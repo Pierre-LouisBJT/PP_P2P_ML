@@ -37,7 +37,7 @@ def localLossFun(model, agents_data_idx, lambd, agent): #float
     return localLoss
 
 def localLossFunGrad(model, agents_data_idx, lambd, agent): #list of n float
-    theta = model[agent][-1] #current local theta
+    theta = model[agent][agent] #current local theta
 
     localLossGrad = 0
 
