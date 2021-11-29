@@ -88,8 +88,8 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim
     for step in range(0, max_steps):
         for agent in range (0, n):
             if step == clocks[agent] : #agent wakes up
-                if agent==0:
-                    print(model[agent][agent])
+                #if agent==0:
+                #    print(model[agent][agent])
                 #update local theta_i
                 model = updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd) #TODO args?
                 #broadcast step
@@ -107,7 +107,7 @@ def evaluate(data, model, agents_data_idx): #makes predictions using a model on 
         for data_idx in agents_data_idx[user]:
             user_RMSE.append(loss(model[user][user], data[data_idx][0], data[data_idx][1]))
     user_RMSEs.append(sum(user_RMSE)/len(user_RMSE))
-    return False
+    return user_RMSEs
 
 ### RUN ###
 """
@@ -119,9 +119,9 @@ else:
     print('add flag job (train or evaluate)')
 """
 path = PATH_TO_DATA
-data, agents_data_idx = load_ml100k(path)
+train_data, train_agents_data_idx, test_data, test_agents_data_idx = load_ml100k(path)
 
-n = len(agents_data_idx)
+n = len(train_agents_data_idx)
 
 mu=0.5
 
@@ -129,7 +129,7 @@ locL = []
 for i in range(0, n):
     locL.append(1)
 
-max_steps = 50000
+max_steps = 50000*2
 
 W = []
 for i in range(0, n):
@@ -142,4 +142,8 @@ nbrs = NearestNeighbors(n_neighbors=5, algorithm='auto', metric=smp.cosine_simil
 
 W = np.identity(n)
 
-train(data, W, agents_data_idx, 0, mu, locL, max_steps)
+model = train(train_data, W, train_agents_data_idx, 0, mu, locL, max_steps)
+print('trained model for {} steps'.format(max_steps))
+
+user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
+print(sum(user_RMSEs)/len(user_RMSEs))

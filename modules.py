@@ -3,6 +3,7 @@ This is where we put functions
 """
 
 import numpy as np #TODO: don't import twice
+import random
 
 def W(data): # construct the adjency matrix of the graph, using method from paper for ml-100k
     return False
@@ -103,6 +104,20 @@ def load_ml100k(path): #path (str) to folder, ends with '/'
         rawdata.append(int_line)
     #Warning : at this stage, the object rawdata isn't the final data
 
+    #we split between train and test 
+    train_test_ratio = 0.2
+    #shuffle
+    random.shuffle(rawdata)
+    train_rawdata = rawdata[0: int(len(rawdata)*(1 - train_test_ratio))]
+    test_rawdata = rawdata[int(len(rawdata)*(1 - train_test_ratio)): ]
+
+    train_data, train_agents_data_idx = loader(path, train_rawdata, n)
+    test_data, test_agents_data_idx = loader(path, test_rawdata, n)
+
+    print('Dataset is loaded!')
+    return train_data, train_agents_data_idx, test_data, test_agents_data_idx
+
+def loader(path, rawdata,n):
     #create the agents_data_idx 
     agents_data_idx = []
     for i in range(0,n):
@@ -130,5 +145,4 @@ def load_ml100k(path): #path (str) to folder, ends with '/'
         item_id = x[1]
         rating = x[2]
         data.append([items[item_id - 1], rating]) #item_idx = item_id - 1
-    print('Dataset is loaded!')
     return data, agents_data_idx
