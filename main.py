@@ -96,11 +96,13 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps): #d is the dim
                 saved_model = model
                 #update local theta_i
                 model = updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd) #TODO args?
+                #if saved_model != model:
+                    #print('diff models before update')
                 #broadcast step
                 model = broadcastStep(model, neighbors, agent)
                 #test
-                if saved_model == model:
-                    print('equal models ...')
+                #if saved_model != model:
+                    #print('diff models after')
                 #calculate time before next wake up
                 clocks[agent] = step + np.random.poisson(lam=1.0, size=None)
 
@@ -145,7 +147,7 @@ for i in range(0, n):
         line.append(1)
     W.append(line)
 
-nbrs = NearestNeighbors(n_neighbors=5, algorithm='auto', metric=smp.cosine_similarity).fit(test)
+#nbrs = NearestNeighbors(n_neighbors=5, algorithm='auto', metric=smp.cosine_similarity).fit(test)
 
 W = np.identity(n)
 
