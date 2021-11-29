@@ -54,9 +54,9 @@ def localLossFunGrad(data, model, agents_data_idx, lambd, agent): #list of n flo
 def updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd):
     theta = model[agent][-1]
     learningPart = 0.0
-    
+    #print(np.nonzero(W[agent])[0].tolist())
     for neighbor in np.nonzero(W[agent])[0].tolist():
-        print(W[agent][neighbor] * np.array(model[neighbor][-1]) / W[agent][agent])
+        #print(W[agent][neighbor] * np.array(model[neighbor][-1]) / W[agent][agent])
         learningPart += W[agent][neighbor] * np.array(model[neighbor][-1]) / W[agent][agent]
 
 
