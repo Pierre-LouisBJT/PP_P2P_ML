@@ -5,6 +5,7 @@ Theta (global param) is a list of dictionnaries.
 """
 import random
 import numpy as np
+from sklearn import neighbors
 from sklearn.neighbors import NearestNeighbors
 from absl import flags
 
@@ -17,9 +18,11 @@ from config import PATH_TO_DATA#import the configuration variables
 
 def train(data, W, agents_data_idx, privacy, mu, locL, max_steps, eps): #d is the dim of x
     """
+    data : list of 100'000 datapoints [x, y] from MovieLens 100K Dataset (https://grouplens.org/datasets/movielens/100k/)
+
     W : list of n lists with n float each, nonnegative weight matrix for n agents;
 
-    agents_data_idx : list of n float, list of neighbors for the agent;
+    agents_data_idx : list of n lists with n float each, list of neighbors for each agent;
 
     privacy : boolean, is True for the private case, False else;
 
@@ -131,6 +134,8 @@ else:
 path = PATH_TO_DATA
 train_data, train_agents_data_idx, test_data, test_agents_data_idx = load_ml100k(path)
 
+print("Dataset size is: ", len(train_data + test_data))
+
 n = len(train_agents_data_idx)
 
 mu=1000
@@ -141,19 +146,29 @@ for i in range(0, n):
 
 max_steps = 30
 
-W = []
+X_mean = []
 for i in range(0, n):
-    line = []
-    for j in range(0,n):
-        line.append(1)
-    W.append(line)
+    xy = []
+    for data_ind in train_agents_data_idx[i]:
+        xy.append(train_data[data_ind][0] + [train_data[data_ind][1]])
+    X_mean.append(np.mean(xy, axis=0))
 
 #generate privacy epsilons
 eps = [1.0]*n
 
 #nbrs = NearestNeighbors(n_neighbors=10, algorithm='auto', metric=smp.cosine_similarity).fit(test)
 
-W = np.identity(n)
+nbrs = NearestNeighbors(n_neighbors=10, algorithm='auto', metric='cosine').fit(X_mean)
+_, ratingsNeighbors = nbrs.kneighbors(X_mean)
+
+#W initialisation
+W = []
+for i in range(0, n):
+    neighborsVec = np.zeros(n)
+    for j in range(len(neighborsVec)):
+        if j in ratingsNeighbors[i]:
+            neighborsVec[j] = 1.0
+    W.append(neighborsVec)
 
 ### Compute scores ###
 public_RMSEs = []
