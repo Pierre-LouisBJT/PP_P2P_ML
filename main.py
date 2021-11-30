@@ -175,17 +175,66 @@ for i in range(0, n):
 ### Compute scores ###
 public_RMSEs = []
 private_RMSEs = []
-"""
+
+#Purely local models
+RMSEs = []
+#W = np.identity(n)
+mu=1000
+
+for i in range(0,5):
+    model = train(train_data, np.identity(n), train_agents_data_idx, False, mu, locL, max_steps, eps)
+    print('trained a model for {} steps'.format(max_steps))
+    user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
+    print('Without privacy :', sum(user_RMSEs)/len(user_RMSEs))
+    RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
+    print('')
+
+print('Purely local models RMSE : {}'.format(sum(RMSEs)/len(RMSEs)))
+print('######################')
+
+#Non-priv. CD
+mu = 1
+
 for i in range(0,5):
     model = train(train_data, W, train_agents_data_idx, False, mu, locL, max_steps, eps)
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
     print('Without privacy :', sum(user_RMSEs)/len(user_RMSEs))
-    public_RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
+    RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
+    print('')
 
-print('RMSE : {}'.format(sum(public_RMSEs)/len(public_RMSEs)))
+print('Non-priv. CD RMSE : {}'.format(sum(RMSEs)/len(RMSEs)))
 print('######################')
-"""
+#private
+RMSEs = []
+eps = [1.0]*n
+
+for i in range(0,5):
+    model = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
+    print('trained a model for {} steps'.format(max_steps))
+    user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
+    print('With privacy :', sum(user_RMSEs)/len(user_RMSEs))
+    RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
+
+print('Private RMSE with eps={} : {}'.format(eps[0],sum(RMSEs)/len(RMSEs)))
+
+#private
+RMSEs = []
+eps = [0.5]*n
+
+for i in range(0,5):
+    model = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
+    print('trained a model for {} steps'.format(max_steps))
+    user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
+    print('With privacy :', sum(user_RMSEs)/len(user_RMSEs))
+    RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
+
+print('Private RMSE with eps={} : {}'.format(eps[0],sum(RMSEs)/len(RMSEs)))
+
+#private
+RMSEs = []
+eps = [0.1]*n
+
 for i in range(0,5):
     if i==0:
         model, RMSEsLog = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
@@ -193,6 +242,7 @@ for i in range(0,5):
         model, _ = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
+<<<<<<< HEAD
     if i==0:
         print(RMSEsLog)
         plt.plot([j + 1 for j in range(len(RMSEsLog))], RMSEsLog)
@@ -202,5 +252,9 @@ for i in range(0,5):
         plt.savefig("logRMSEs.jpg")
     print('With privacy : {:.2f} \n'.format(sum(user_RMSEs)/len(user_RMSEs)))
     private_RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
+=======
+    print('With privacy :', sum(user_RMSEs)/len(user_RMSEs))
+    RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
+>>>>>>> 4f29198588241eb06a39cb4139319778746838e4
 
-print('RMSE : {}'.format(sum(private_RMSEs)/len(private_RMSEs)))
+print('Private RMSE with eps={} : {}'.format(eps[0],sum(RMSEs)/len(RMSEs)))
