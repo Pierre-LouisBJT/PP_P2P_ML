@@ -112,14 +112,10 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps, eps, logErrors
                     model = updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd)
                     model = broadcastStep(model, neighbors, agent)
                     clocks[agent] = step + np.random.poisson(lam=1.0, size=None)
-<<<<<<< HEAD
-    return model
-=======
             if logErrors:
                 RMSEsLog = logRMSE(data, agents_data_idx, model, RMSEsLog)
 
     return model, RMSEsLog
->>>>>>> 28962d23f0614280807c67d650e4f83116979d69
 
 def evaluate(data, model, agents_data_idx): #makes predictions using a model on the data provided
     n = len(agents_data_idx)
