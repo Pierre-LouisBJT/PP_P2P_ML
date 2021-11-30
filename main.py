@@ -178,18 +178,7 @@ max_steps = 50
 
 #Purely local models; W = np.identity(n)
 RMSEs = []
-mu=1000
-
-# Step 1: Init multiprocessing.Pool()
-pool = mp.Pool(mp.cpu_count())
-
-# Step 2: `pool.apply` the `howmany_within_range()`
-results = [pool.apply(compute, args=(train_data, np.identity(n), train_agents_data_idx, False, mu, locL, max_steps, eps)) for i in range(0,5)]
-
-# Step 3: Don't forget to close
-pool.close()   
-
-print('parallel :', sum(results)/len(results))
+mu=1000 
 
 """
 for i in range(0,5):
@@ -212,14 +201,14 @@ for i in range(0,5):
         plt.savefig("Purely local.jpg")
     print('')
 
-"""
-
 print('Purely local models RMSE : {}'.format(sum(RMSEs)/len(RMSEs)))
 print('######################')
 
+"""
+
 #Non-priv. CD
 mu = 1000
-
+"""
 for i in range(0,5):
     if i==0:
         model, RMSEsLog = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
@@ -242,7 +231,7 @@ for i in range(0,5):
 
 print('Non-priv. CD RMSE : {}'.format(sum(RMSEs)/len(RMSEs)))
 print('######################')
-
+"""
 #Private, eps = 1.0
 RMSEs = []
 
@@ -269,6 +258,7 @@ for i in range(0,5):
 
 print('Private RMSE with eps={} : {}'.format(eps[0],sum(RMSEs)/len(RMSEs)))
 
+"""
 #Private, eps = 0.5
 RMSEs = []
 
