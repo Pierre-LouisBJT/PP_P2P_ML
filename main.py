@@ -176,11 +176,11 @@ private_RMSEs = []
 
 #Purely local models
 RMSEs = []
-W = np.identity(n)
+#W = np.identity(n)
 mu=1000
 
 for i in range(0,5):
-    model = train(train_data, W, train_agents_data_idx, False, mu, locL, max_steps, eps)
+    model = train(train_data, np.identity(n), train_agents_data_idx, False, mu, locL, max_steps, eps)
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
     print('Without privacy :', sum(user_RMSEs)/len(user_RMSEs))
@@ -192,7 +192,6 @@ print('######################')
 
 #Non-priv. CD
 mu = 1
-W = 
 
 for i in range(0,5):
     model = train(train_data, W, train_agents_data_idx, False, mu, locL, max_steps, eps)
