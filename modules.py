@@ -78,7 +78,7 @@ def updateStep_private(data, model, W, agent, agents_data_idx, C, mu, alpha, lam
 
     #privacy noise
     s = 2*locL[agent] / (eps[agent] * len(agents_data_idx[agent]))
-    etha = random.laplace(loc=0.0, scale=s, size=len(theta))
+    etha = np.random.laplace(loc=0.0, scale=s, size=len(theta))
 
     learningPart -= mu * C[agent] * localLossFunGrad(data, model, agents_data_idx, lambd, agent) + etha
     theta_new = (1 - alpha[agent]) * np.array(theta) + alpha[agent] * learningPart
