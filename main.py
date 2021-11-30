@@ -242,7 +242,6 @@ for i in range(0,5):
         model, _ = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
-<<<<<<< HEAD
     if i==0:
         print(RMSEsLog)
         plt.plot([j + 1 for j in range(len(RMSEsLog))], RMSEsLog)
@@ -252,9 +251,5 @@ for i in range(0,5):
         plt.savefig("logRMSEs.jpg")
     print('With privacy : {:.2f} \n'.format(sum(user_RMSEs)/len(user_RMSEs)))
     private_RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
-=======
-    print('With privacy :', sum(user_RMSEs)/len(user_RMSEs))
-    RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
->>>>>>> 4f29198588241eb06a39cb4139319778746838e4
 
 print('Private RMSE with eps={} : {}'.format(eps[0],sum(RMSEs)/len(RMSEs)))
