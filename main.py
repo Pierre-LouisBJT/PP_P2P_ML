@@ -208,7 +208,7 @@ print('######################')
 
 #Non-priv. CD
 mu = 1000
-"""
+
 for i in range(0,5):
     if i==0:
         model, RMSEsLog = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
@@ -231,6 +231,7 @@ for i in range(0,5):
 
 print('Non-priv. CD RMSE : {}'.format(sum(RMSEs)/len(RMSEs)))
 print('######################')
+
 """
 #Private, eps = 1.0
 RMSEs = []
@@ -258,7 +259,6 @@ for i in range(0,5):
 
 print('Private RMSE with eps={} : {}'.format(eps[0],sum(RMSEs)/len(RMSEs)))
 
-"""
 #Private, eps = 0.5
 RMSEs = []
 
