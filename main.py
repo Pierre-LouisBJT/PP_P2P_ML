@@ -161,12 +161,14 @@ eps = [1.0]*n
 nbrs = NearestNeighbors(n_neighbors=10, algorithm='auto', metric='cosine').fit(X_mean)
 _, ratingsNeighbors = nbrs.kneighbors(X_mean)
 
+#W initialisation
 W = []
 for i in range(0, n):
     neighborsVec = np.zeros(n)
     for j in range(len(neighborsVec)):
         if j in ratingsNeighbors[i]:
             neighborsVec[j] = 1.0
+    W.append(neighborsVec)
 
 ### Compute scores ###
 public_RMSEs = []
@@ -186,7 +188,7 @@ for i in range(0,5):
     model = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
-    print('With privacy :', sum(user_RMSEs)/len(user_RMSEs))
+    print('With privacy : {:.2f} \n'.format(sum(user_RMSEs)/len(user_RMSEs)))
     private_RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
 
 print('RMSE : {}'.format(sum(private_RMSEs)/len(private_RMSEs)))
