@@ -1,5 +1,7 @@
 # PP_P2P_ML
 
+This work is an implementation of the concepts from *Personalized and Private Peer-to-Peer Machine Learning* (Aurélien Bellet and al.). You can find the original paper there : http://proceedings.mlr.press/v84/bellet18a/bellet18a.pdf
+
 ## Required packages
 
 You need to install numpy, matplotlib and sklearn.
