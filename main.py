@@ -159,8 +159,6 @@ locL = []
 for i in range(0, n):
     locL.append(1)
 
-max_steps = 30*2
-
 X_mean = []
 for i in range(0, n):
     xy = []
@@ -189,75 +187,104 @@ for i in range(0, n):
 public_RMSEs = []
 private_RMSEs = []
 
-#function to parallelize
-def compute(data, W, agents_data_idx, privacy, mu, locL, max_steps, eps, test_data):
-    model = train(data, W, agents_data_idx, privacy, mu, locL, max_steps, eps)
-    user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
+#Number of steps in time
+max_steps = 50
 
-    return sum(user_RMSEs)/len(user_RMSEs)
-
-#Purely local models
+#Purely local models; W = np.identity(n)
 RMSEs = []
-#W = np.identity(n)
-mu=1000
-
-# Step 1: Init multiprocessing.Pool()
-pool = mp.Pool(mp.cpu_count())
-
-# Step 2: `pool.apply` the `howmany_within_range()`
-results = [pool.apply(compute, args=(train_data, np.identity(n), train_agents_data_idx, False, mu, locL, max_steps, eps)) for i in range(0,5)]
-
-# Step 3: Don't forget to close
-pool.close()   
-
-print('parallel :', sum(results)/len(results))
+mu=1000 
 
 """
 for i in range(0,5):
-    model = train(train_data, np.identity(n), train_agents_data_idx, False, mu, locL, max_steps, eps)
+    if i==0:
+        model, RMSEsLog = train(train_data, np.identity(n), train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
+    else:
+        break
+        model, _ = train(train_data, np.identity(n), train_agents_data_idx, True, mu, locL, max_steps, eps)
+
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
     print('Without privacy :', sum(user_RMSEs)/len(user_RMSEs))
     RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
+    if i==0:
+        print(RMSEsLog)
+        plt.plot([j + 1 for j in range(len(RMSEsLog))], RMSEsLog)
+        plt.xlabel("steps")
+        plt.ylabel("RMSE")
+        plt.title("Purely local : RMSEs for each step, max_steps = 100")
+        plt.savefig("Purely local.jpg")
     print('')
 
 print('Purely local models RMSE : {}'.format(sum(RMSEs)/len(RMSEs)))
 print('######################')
 
+"""
+
 #Non-priv. CD
 mu = 1000
 
 for i in range(0,5):
-    model = train(train_data, W, train_agents_data_idx, False, mu, locL, max_steps, eps)
+    if i==0:
+        model, RMSEsLog = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
+    else:
+        break
+        model, _ = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
+    
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
     print('Without privacy :', sum(user_RMSEs)/len(user_RMSEs))
     RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
+    if i==0:
+        print(RMSEsLog)
+        plt.plot([j + 1 for j in range(len(RMSEsLog))], RMSEsLog)
+        plt.xlabel("steps")
+        plt.ylabel("RMSE")
+        plt.title("Non-private : RMSEs for each step, max_steps = 100")
+        plt.savefig("Non-private.jpg")
     print('')
 
 print('Non-priv. CD RMSE : {}'.format(sum(RMSEs)/len(RMSEs)))
 print('######################')
 
-#private
+"""
+#Private, eps = 1.0
 RMSEs = []
+
 eps = [1.0]*n
 
 for i in range(0,5):
-    model = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
+    if i==0:
+        model, RMSEsLog = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
+    else:
+        break
+        model, _ = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
+
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
     print('With privacy :', sum(user_RMSEs)/len(user_RMSEs))
     RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
-    print('')
+    if i==0:
+        print(RMSEsLog)
+        plt.plot([j + 1 for j in range(len(RMSEsLog))], RMSEsLog)
+        plt.xlabel("steps")
+        plt.ylabel("RMSE")
+        plt.title("Private, eps = 1.0 : RMSEs for each step, max_steps = 100")
+        plt.savefig("Private, eps = 1.jpg")
 
 print('Private RMSE with eps={} : {}'.format(eps[0],sum(RMSEs)/len(RMSEs)))
 
-#private
+#Private, eps = 0.5
 RMSEs = []
+
 eps = [0.5]*n
 
 for i in range(0,5):
-    model = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
+    if i==0:
+        model, RMSEsLog = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
+    else:
+        break
+        model, _ = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
+
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
     print('With privacy :', sum(user_RMSEs)/len(user_RMSEs))
@@ -266,14 +293,16 @@ for i in range(0,5):
 
 print('Private RMSE with eps={} : {}'.format(eps[0],sum(RMSEs)/len(RMSEs)))
 
-#private
+#Private, eps = 0.1
 RMSEs = []
+
 eps = [0.1]*n
 
 for i in range(0,5):
     if i==0:
         model, RMSEsLog = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
     else:
+        break
         model, _ = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)

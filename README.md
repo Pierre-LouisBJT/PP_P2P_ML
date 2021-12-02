@@ -18,3 +18,6 @@
 | ? | Add privacy in model | -
 | ? | Bench mark | -
 | ? | Init graph | -
+| After the presentation | Better averaging | Private case : keep the same wake up times for averaging over the noise
+| After the presentation | Agents altering | See what happens if one agent disconnects from the net
+| After the presentation | Sociology | See how the algorithm works with neural networks : i) theta is NN weights; loss function and its gradient should be changed ii) see how the setting could modelise moral for ethical problemes iii) see how it could be proven in experimental economics
