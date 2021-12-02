@@ -10,7 +10,7 @@ You need to install numpy, matplotlib and sklearn.
 
 You need to download the dataset ml-100k. It is available here : https://grouplens.org/datasets/movielens/100k/
 
-## The config file
+## The config.py file
 
 You MUST state the path to your dataset folder in the variable PATH_TO_DATA (end with "/"). You can also change the default variables of the script.
 
