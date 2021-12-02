@@ -1,23 +1,23 @@
 # PP_P2P_ML
 
-|      Worker      |     Task               | Remarks                                                                                                                                    |
-| :------------: | :-----------------------: | ----------------------------------------------------------------------------------------------------------------------------------------- |
-|  Leonid   |     Lire article                | Test 2
-|  PLB   |     Lire article                | Test 2
-|     |     Pseudo code              | Créer les fichiers .py et les classes/fonctions (nom, entrèe, sortie)
-|  -   |     choisir librairie de ML              | Test 2
-| ? | English | Make our repository English-readers friendly
-| Leonid | faire fonction updateStep() non private | flag for privacy
-| PLB | Theta initialization | law?
-| PLB | broadcasting | with matrix
-| ? | W init | -
-| ? | loss functions (l, L) and their grads | -
-| ? | loader dataset | -
-| ? | transform lists to np.array | -
-| ? | Slides | See if "W is an identity matrix" == "mu is large" == "Purely local learning"
-| ? | Add privacy in model | -
-| ? | Bench mark | -
-| ? | Init graph | -
-| After the presentation | Better averaging | Private case : keep the same wake up times for averaging over the noise
-| After the presentation | Agents altering | See what happens if one agent disconnects from the net
-| After the presentation | Sociology | See how the algorithm works with neural networks : i) theta is NN weights; loss function and its gradient should be changed ii) see how the setting could modelise moral for ethical problemes iii) see how it could be proven in experimental economics
+## Required packages
+
+You need to install numpy, matplotlib and sklearn.
+
+## The data
+
+You need to download the dataset ml-100k. It is avaliable here : https://grouplens.org/datasets/movielens/100k/
+
+## The config file
+
+You MUST state the path to your dataset folder in the variable PATH_TO_DATA (end with "/"). You can also change the default variables of the script.
+
+## Running the code
+
+To run the code, just run the main.py file.
+
+```
+$ python main.py
+```
+
+Graphs pictures will be saved in your working folder.
