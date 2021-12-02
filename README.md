@@ -8,7 +8,7 @@ You need to install numpy, matplotlib and sklearn.
 
 ## The data
 
-You need to download the dataset ml-100k. It is avaliable here : https://grouplens.org/datasets/movielens/100k/
+You need to download the dataset ml-100k. It is available here : https://grouplens.org/datasets/movielens/100k/
 
 ## The config file
 
