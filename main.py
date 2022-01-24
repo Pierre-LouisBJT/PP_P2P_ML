@@ -176,22 +176,28 @@ private_RMSEs = []
 #Number of steps in time
 max_steps = 50
 
+#mu, 1000 by default
+mu=1000 
+
+"""
 #Purely local models; W = np.identity(n)
 RMSEs = []
-mu=1000 
+RMSEsLog = []
 
 
 for i in range(0,5):
     if i==0:
         model, RMSEsLog = train(train_data, np.identity(n), train_agents_data_idx, False, mu, locL, max_steps, eps, logErrors=True)
     else:
-        model, _ = train(train_data, np.identity(n), train_agents_data_idx, False, mu, locL, max_steps, eps)
+        model, RMSEsLogTemp = train(train_data, np.identity(n), train_agents_data_idx, False, mu, locL, max_steps, eps, logErrors=True)
+        RMSEsLog = [sum(x) for x in zip(RMSEsLog, RMSEsLogTemp)]
 
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
     print('Without privacy :', sum(user_RMSEs)/len(user_RMSEs))
     RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
-    if i==0:
+    if i==4:
+        RMSEsLog[:] = [x / 5 for x in RMSEsLog]
         print(RMSEsLog)
         plt.plot([j + 1 for j in range(len(RMSEsLog))], RMSEsLog)
         plt.xlabel("steps")
@@ -207,19 +213,21 @@ print('######################')
 
 #Non-priv. CD
 RMSEs = []
-mu = 1000
+RMSEsLog = []
 
 for i in range(0,5):
     if i==0:
         model, RMSEsLog = train(train_data, W, train_agents_data_idx, False, mu, locL, max_steps, eps, logErrors=True)
     else:
-        model, _ = train(train_data, W, train_agents_data_idx, False, mu, locL, max_steps, eps)
-    
+        model, RMSEsLogTemp = train(train_data, W, train_agents_data_idx, False, mu, locL, max_steps, eps, logErrors=True)
+        RMSEsLog = [sum(x) for x in zip(RMSEsLog, RMSEsLogTemp)]
+
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
     print('Without privacy :', sum(user_RMSEs)/len(user_RMSEs))
     RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
-    if i==0:
+    if i==4:
+        RMSEsLog[:] = [x / 5 for x in RMSEsLog]
         print(RMSEsLog)
         plt.plot([j + 1 for j in range(len(RMSEsLog))], RMSEsLog)
         plt.xlabel("steps")
@@ -235,19 +243,22 @@ print('######################')
 
 #Private, eps = 1.0
 RMSEs = []
+RMSEsLog = []
 eps = [1.0]*n
 
 for i in range(0,5):
     if i==0:
         model, RMSEsLog = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
     else:
-        model, _ = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
+        model, RMSEsLogTemp = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
+        RMSEsLog = [sum(x) for x in zip(RMSEsLog, RMSEsLogTemp)]
 
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
     print('With privacy :', sum(user_RMSEs)/len(user_RMSEs))
     RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
-    if i==0:
+    if i==4:
+        RMSEsLog[:] = [x / 5 for x in RMSEsLog]
         print(RMSEsLog)
         plt.plot([j + 1 for j in range(len(RMSEsLog))], RMSEsLog)
         plt.xlabel("steps")
@@ -262,19 +273,22 @@ print('######################')
 
 #Private, eps = 0.5
 RMSEs = []
+RMSEsLog = []
 eps = [0.5]*n
 
 for i in range(0,5):
     if i==0:
         model, RMSEsLog = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
     else:
-        model, _ = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
+        model, RMSEsLogTemp = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
+        RMSEsLog = [sum(x) for x in zip(RMSEsLog, RMSEsLogTemp)]
 
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
     print('With privacy :', sum(user_RMSEs)/len(user_RMSEs))
     RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
-    if i==0:
+    if i==4:
+        RMSEsLog[:] = [x / 5 for x in RMSEsLog]
         print(RMSEsLog)
         plt.plot([j + 1 for j in range(len(RMSEsLog))], RMSEsLog)
         plt.xlabel("steps")
@@ -286,21 +300,25 @@ for i in range(0,5):
 
 print('Private RMSE with eps={} : {}'.format(eps[0],sum(RMSEs)/len(RMSEs)))
 print('######################')
-
+"""
 #Private, eps = 0.1
 RMSEs = []
+RMSEsLog = []
 eps = [0.1]*n
 
 for i in range(0,5):
     if i==0:
         model, RMSEsLog = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
     else:
-        model, _ = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps)
+        model, RMSEsLogTemp = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
+        RMSEsLog = [sum(x) for x in zip(RMSEsLog, RMSEsLogTemp)]
+
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
     print('With privacy :', sum(user_RMSEs)/len(user_RMSEs))
     RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
-    if i==0:
+    if i==4:
+        RMSEsLog[:] = [x / 5 for x in RMSEsLog]
         print(RMSEsLog)
         plt.plot([j + 1 for j in range(len(RMSEsLog))], RMSEsLog)
         plt.xlabel("steps")
