@@ -1,20 +1,25 @@
-# PP_P2P_ML
+# Personalized and Private Peer-to-Peer Machine Learning Modelisation with Python
 
-|      Worker      |     Task               | Remarks                                                                                                                                    |
-| :------------: | :-----------------------: | ----------------------------------------------------------------------------------------------------------------------------------------- |
-|  Leonid   |     Lire article                | Test 2
-|  PLB   |     Lire article                | Test 2
-|     |     Pseudo code              | Créer les fichiers .py et les classes/fonctions (nom, entrèe, sortie)
-|  -   |     choisir librairie de ML              | Test 2
-| ? | English | Make our repository English-readers friendly
-| Leonid | faire fonction updateStep() non private | flag for privacy
-| PLB | Theta initialization | law?
-| PLB | broadcasting | with matrix
-| ? | W init | -
-| ? | loss functions (l, L) and their grads | -
-| ? | loader dataset | -
-| ? | transform lists to np.array | -
-| ? | Slides | See if "W is an identity matrix" == "mu is large" == "Purely local learning"
-| ? | Add privacy in model | -
-| ? | Bench mark | -
-| ? | Init graph | -
+This work is an implementation of the concepts from *Personalized and Private Peer-to-Peer Machine Learning* (Aurélien Bellet and al.). You can find the original paper there : http://proceedings.mlr.press/v84/bellet18a/bellet18a.pdf
+
+## Required packages
+
+You need to install numpy, matplotlib and sklearn.
+
+## The data
+
+You need to download the dataset ml-100k. It is available here : https://grouplens.org/datasets/movielens/100k/
+
+## The config.py file
+
+You MUST state the path to your dataset folder in the variable PATH_TO_DATA (end with "/"). You can also change the default variables of the script.
+
+## Running the code
+
+To run the code, just run the main.py file.
+
+```
+$ python main.py
+```
+
+Graphs pictures will be saved in your working folder.

@@ -24,7 +24,7 @@ def loss(theta, x, y): # float, (theta.T * x - y)**2, quadratic loss by default,
 def lossGrad(theta, x, y): # list of n float, 2(theta.T * x - y)x, grad of quadratic loss by default, where theta is current local for agent
     #debug
     return 2 * (np.dot(theta, x) - y) * np.array(x)
-
+"""
 def localLossFun(model, agents_data_idx, lambd, agent): #float
     theta = model[agent][-1] #current local theta
 
@@ -37,7 +37,7 @@ def localLossFun(model, agents_data_idx, lambd, agent): #float
 
     localLoss += lambd[agent] * np.linalg.norm(theta, ord=2)**2
     return localLoss
-
+"""
 def localLossFunGrad(data, model, agents_data_idx, lambd, agent): #list of n float
     theta = model[agent][agent] #current local theta
 
@@ -54,9 +54,7 @@ def localLossFunGrad(data, model, agents_data_idx, lambd, agent): #list of n flo
 def updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd):
     theta = model[agent][-1]
     learningPart = 0.0
-    #print(np.nonzero(W[agent])[0].tolist())
     for neighbor in np.nonzero(W[agent])[0].tolist():
-        #print(W[agent][neighbor] * np.array(model[neighbor][-1]) / W[agent][agent])
         learningPart += W[agent][neighbor] * np.array(model[neighbor][-1]) / W[agent][agent]
 
 
@@ -71,9 +69,7 @@ def updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd):
 def updateStep_private(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd, locL, eps): #eps list of epsilons
     theta = model[agent][-1]
     learningPart = 0.0
-    #print(np.nonzero(W[agent])[0].tolist())
     for neighbor in np.nonzero(W[agent])[0].tolist():
-        #print(W[agent][neighbor] * np.array(model[neighbor][-1]) / W[agent][agent])
         learningPart += W[agent][neighbor] * np.array(model[neighbor][-1]) / W[agent][agent]
 
     #privacy noise

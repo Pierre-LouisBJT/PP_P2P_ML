@@ -7,12 +7,11 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.neighbors import NearestNeighbors
-import multiprocessing as mp
 
-from modules import * #TODO syntax
-from config import PATH_TO_DATA #import the configuration variables
+from modules import *
+from config import PATH_TO_DATA, MU, MAX_STEPS, NUMBER_OF_RUNS #import the configuration variables from config.py
 
-def train(data, W, agents_data_idx, privacy, mu, locL, max_steps, eps, logErrors=False): 
+def train(data, W, agents_data_idx, privacy, mu, locL, max_steps, eps, logErrors=False, verbose=False): 
     """
     data : list of 100'000 datapoints [x, y] from MovieLens 100K Dataset (https://grouplens.org/datasets/movielens/100k/)
 
@@ -28,6 +27,10 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps, eps, logErrors
     locL : list of n float, Lipschitz constants L for localLossGrad, L_i^{loc} for Lipschitz continuous gradien localLossGrad for each agent;
 
     max_steps : maximum number of training steps;
+
+    logErrors : for loss vizualisation
+
+    verbose : print infos on what the code is doing
 
     random initialization
     for each step in range nb_steps :
@@ -89,9 +92,11 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps, eps, logErrors
     RMSEsLog = []
 
     if privacy:
-        print('computing with privacy...')
+        if verbose:
+            print('computing with privacy...')
         for step in range(0, max_steps):
-            print(step)
+            if verbose:
+                print(step)
             for agent in range (0, n):
                 if step >= clocks[agent] : #agent wakes up
                     model = updateStep_private(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd, locL, eps)
@@ -100,10 +105,12 @@ def train(data, W, agents_data_idx, privacy, mu, locL, max_steps, eps, logErrors
             if logErrors:
                 RMSEsLog = logRMSE(data, agents_data_idx, model, RMSEsLog)
     else:
-        print('computing without privacy...')
+        if verbose:
+            print('computing without privacy...')
         #run of the algo for each step
         for step in range(0, max_steps):
-            print(step)
+            if verbose:
+                print(step)
             for agent in range (0, n):
                 if step >= clocks[agent] : #agent wakes up
                     model = updateStep(data, model, W, agent, agents_data_idx, C, mu, alpha, lambd)
@@ -134,7 +141,14 @@ def logRMSE(data, agents_data_idx, model, RMSEs):
     return RMSEs
 
 ### RUN ###
+
+#import from config file (more info there)
 path = PATH_TO_DATA
+mu = MU
+max_steps = MAX_STEPS
+number_of_runs = NUMBER_OF_RUNS
+
+#load dataset
 train_data, train_agents_data_idx, test_data, test_agents_data_idx = load_ml100k(path)
 
 print("Dataset size is: ", len(train_data + test_data))
@@ -160,7 +174,7 @@ eps = [1.0]*n
 nbrs = NearestNeighbors(n_neighbors=10, algorithm='auto', metric='cosine').fit(X_mean)
 _, ratingsNeighbors = nbrs.kneighbors(X_mean)
 
-#W initialisation
+#W initialisation (as described in the paper)
 W = []
 for i in range(0, n):
     neighborsVec = np.zeros(n)
@@ -208,14 +222,17 @@ for i in range(0,5):
     print('')
 
 print('Purely local models RMSE : {}'.format(sum(RMSEs)/len(RMSEs)))
+
+print('')
 print('######################')
+print('')
 
 
 #Non-priv. CD
 RMSEs = []
 RMSEsLog = []
 
-for i in range(0,5):
+for i in range(0,number_of_runs):
     if i==0:
         model, RMSEsLog = train(train_data, W, train_agents_data_idx, False, mu, locL, max_steps, eps, logErrors=True)
     else:
@@ -238,15 +255,17 @@ for i in range(0,5):
     print('')
 
 print('Non-priv. CD RMSE : {}'.format(sum(RMSEs)/len(RMSEs)))
-print('######################')
 
+print('')
+print('######################')
+print('')
 
 #Private, eps = 1.0
 RMSEs = []
 RMSEsLog = []
 eps = [1.0]*n
 
-for i in range(0,5):
+for i in range(0,number_of_runs):
     if i==0:
         model, RMSEsLog = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
     else:
@@ -271,12 +290,16 @@ for i in range(0,5):
 print('Private RMSE with eps={} : {}'.format(eps[0],sum(RMSEs)/len(RMSEs)))
 print('######################')
 
+print('')
+print('######################')
+print('')
+
 #Private, eps = 0.5
 RMSEs = []
 RMSEsLog = []
 eps = [0.5]*n
 
-for i in range(0,5):
+for i in range(0,number_of_runs):
     if i==0:
         model, RMSEsLog = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
     else:
@@ -306,7 +329,7 @@ RMSEs = []
 RMSEsLog = []
 eps = [0.1]*n
 
-for i in range(0,5):
+for i in range(0,number_of_runs):
     if i==0:
         model, RMSEsLog = train(train_data, W, train_agents_data_idx, True, mu, locL, max_steps, eps, logErrors=True)
     else:
@@ -315,7 +338,15 @@ for i in range(0,5):
 
     print('trained a model for {} steps'.format(max_steps))
     user_RMSEs = evaluate(test_data, model, test_agents_data_idx)
-    print('With privacy :', sum(user_RMSEs)/len(user_RMSEs))
+    if i==0:
+        plt.clf()
+        plt.plot([j + 1 for j in range(len(RMSEsLog))], RMSEsLog)
+        plt.xlabel("steps")
+        plt.ylabel("RMSE")
+        plt.title("Private, eps = {} : RMSEs for each step, max_steps = {}".format(eps[0], max_steps))
+        plt.savefig("logRMSEs_private_eps{}.jpg".format(eps[0]))
+        print('Saved RMSEs graph')
+    print('With privacy : {:.2f} \n'.format(sum(user_RMSEs)/len(user_RMSEs)))
     RMSEs.append(sum(user_RMSEs)/len(user_RMSEs))
     if i==4:
         RMSEsLog[:] = [x / 5 for x in RMSEsLog]
